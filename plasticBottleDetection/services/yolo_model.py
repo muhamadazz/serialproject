@@ -18,7 +18,7 @@ def get_size(area):
 
 
 def detect_image(image_path):
-    results = model(image_path)
+    results = model(image_path, conf=0.8)
 
     predictions = []
 
