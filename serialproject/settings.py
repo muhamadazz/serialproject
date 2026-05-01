@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'serialcomm',
     'serial',
     'corsheaders',
+    'plasticBottleDetection'
 ]
 
 MIDDLEWARE = [
