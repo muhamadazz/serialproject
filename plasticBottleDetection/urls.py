@@ -1,10 +1,14 @@
 from django.urls import path
-from .views import (
-    detect_plastic,
-    detect_plastic_efficientdet
-)
+from . import views
+from . import rfdetr_views
 
 urlpatterns = [
-    path('detect/', detect_plastic),
-    path('detect-efficientdet/', detect_plastic_efficientdet),
+    # YOLO endpoint
+    path('detect/', views.detect_plastic, name='detect_yolo'),
+    
+    # RF-DETR endpoint
+    path('detect-rfdetr/', rfdetr_views.detect_plastic, name='detect_rfdetr'),
+    
+    # Statistics endpoint (untuk perbandingan model)
+    path('statistics/', views.get_inference_statistics, name='get_statistics'),
 ]

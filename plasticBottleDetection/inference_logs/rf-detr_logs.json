@@ -1,0 +1,12 @@
+[
+  {
+    "timestamp": "2026-06-05T09:27:27.173198",
+    "model": "RF-DETR",
+    "image_name": "Syakila-Andrayani_2025-10-06T17-42-59-456Z_jpg.rf.56389b7e7c33e30b97e1c5ec22a3fb3c.jpg",
+    "inference_time_ms": 3620.63,
+    "inference_time_sec": 3.6206,
+    "fps": 0.28,
+    "detection_count": 1,
+    "image_size_kb": 42.58
+  }
+]

@@ -1,141 +1,135 @@
-import torch
-import uuid
-from PIL import Image
-from torchvision import transforms
-from effdet import create_model
+# import torch
+# import uuid
+# from PIL import Image
+# from torchvision import transforms
+# from effdet import create_model
 
-CLASS_NAMES = {
-    0: "BotolPlastik"
-}
+# CLASS_NAMES = {
+#     0: "BotolPlastik"
+# }
 
-# =========================
-# Load Model
-# =========================
-model = create_model(
-    'tf_efficientdet_d2',
-    bench_task='predict',
-    num_classes=1,
-    pretrained=False,
-    image_size=(640, 640)
-)
+# # =========================
+# # Load Model
+# # =========================
+# model = create_model(
+#     'tf_efficientdet_d0',
+#     bench_task='predict',
+#     num_classes=1,
+#     pretrained=False,
+#     image_size=(600, 600)
+# )
 
-checkpoint = torch.load(
-    "plasticBottleDetection/best_efficientdet_d2.pt",
-    map_location=torch.device("cpu")
-)
+# checkpoint = torch.load(
+#     "plasticBottleDetection/efficientdet-d0_29_600.pth",
+#     map_location=torch.device("cpu")
+# )
 
-# Jika checkpoint hasil training berbentuk dictionary
-if isinstance(checkpoint, dict):
+# # Handle checkpoint dictionary
+# if isinstance(checkpoint, dict):
 
-    # paling umum
-    if "state_dict" in checkpoint:
-        checkpoint = checkpoint["state_dict"]
+#     if "state_dict" in checkpoint:
+#         checkpoint = checkpoint["state_dict"]
 
-    # kadang key model
-    elif "model" in checkpoint:
-        checkpoint = checkpoint["model"]
+#     elif "model" in checkpoint:
+#         checkpoint = checkpoint["model"]
 
-# hapus prefix module. jika ada
-new_state_dict = {}
+# # Remove module. prefix
+# new_state_dict = {}
 
-for k, v in checkpoint.items():
+# for k, v in checkpoint.items():
 
-    if k.startswith("module."):
-        k = k[7:]
+#     if k.startswith("module."):
+#         k = k[7:]
 
-    new_state_dict[k] = v
+#     new_state_dict[k] = v
 
-model.load_state_dict(new_state_dict, strict=False)
+# model.load_state_dict(new_state_dict, strict=False)
 
-model.eval()
+# model.eval()
 
+# # =========================
+# # Transform Image
+# # =========================
+# transform = transforms.Compose([
+#     transforms.Resize((600, 600)),
+#     transforms.ToTensor(),
+# ])
 
-# =========================
-# Transform Image
-# =========================
-transform = transforms.Compose([
-    transforms.Resize((640, 640)),
-    transforms.ToTensor(),
-])
+# # =========================
+# # Size Estimation
+# # =========================
+# def get_size(area):
 
+#     if area < 60000:
+#         return "330ml"
 
-# =========================
-# Size Estimation
-# =========================
-def get_size(area):
+#     elif area < 100000:
+#         return "600ml"
 
-    if area < 60000:
-        return "330ml"
+#     else:
+#         return "1500ml"
 
-    elif area < 100000:
-        return "600ml"
+# # =========================
+# # Detection Function
+# # =========================
+# def detect_image_efficientdet(image_path):
 
-    else:
-        return "1500ml"
+#     image = Image.open(image_path).convert("RGB")
 
+#     original_width, original_height = image.size
 
-# =========================
-# Detection Function
-# =========================
-def detect_image_efficientdet(image_path):
+#     img_tensor = transform(image).unsqueeze(0)
 
-    image = Image.open(image_path).convert("RGB")
+#     with torch.no_grad():
 
-    original_width, original_height = image.size
+#         results = model(img_tensor)
 
-    img_tensor = transform(image).unsqueeze(0)
+#     predictions = []
 
-    with torch.no_grad():
+#     detections = results[0]
 
-        results = model(img_tensor)
+#     for det in detections:
 
-    predictions = []
+#         score = float(det[4])
 
-    detections = results[0]
+#         if score < 0.5:
+#             continue
 
-    for det in detections:
+#         x1, y1, x2, y2 = det[:4].tolist()
 
-        score = float(det[4])
+#         # Scale back to original image size
+#         x_scale = original_width / 600
+#         y_scale = original_height / 600
 
-        # confidence threshold
-        if score < 0.8:
-            continue
+#         x1 *= x_scale
+#         x2 *= x_scale
+#         y1 *= y_scale
+#         y2 *= y_scale
 
-        x1, y1, x2, y2 = det[:4].tolist()
+#         width = x2 - x1
+#         height = y2 - y1
 
-        # scaling ke ukuran asli gambar
-        x_scale = original_width / 512
-        y_scale = original_height / 512
+#         x_center = (x1 + x2) / 2
+#         y_center = (y1 + y2) / 2
 
-        x1 *= x_scale
-        x2 *= x_scale
-        y1 *= y_scale
-        y2 *= y_scale
+#         area = width * height
 
-        width = x2 - x1
-        height = y2 - y1
+#         size = get_size(area)
 
-        x_center = (x1 + x2) / 2
-        y_center = (y1 + y2) / 2
+#         class_id = 0
 
-        area = width * height
+#         predictions.append({
+#             "width": width,
+#             "height": height,
+#             "x": x_center,
+#             "y": y_center,
+#             "confidence": score,
+#             "class_id": class_id,
+#             "class": CLASS_NAMES.get(class_id, "Unknown"),
+#             "size": size,
+#             "area": area,
+#             "detection_id": str(uuid.uuid4()),
+#             "parent_id": "image"
+#         })
 
-        size = get_size(area)
-
-        class_id = 0
-
-        predictions.append({
-            "width": width,
-            "height": height,
-            "x": x_center,
-            "y": y_center,
-            "confidence": score,
-            "class_id": class_id,
-            "class": CLASS_NAMES.get(class_id, "Unknown"),
-            "size": size,
-            "area": area,
-            "detection_id": str(uuid.uuid4()),
-            "parent_id": "image"
-        })
-
-    return predictions
+#     return predictions

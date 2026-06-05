@@ -1,0 +1,12 @@
+[
+  {
+    "timestamp": "2026-06-05T09:30:29.407840",
+    "model": "YOLO",
+    "image_name": "Syakila-Andrayani_2025-10-06T17-42-59-456Z_jpg.rf.56389b7e7c33e30b97e1c5ec22a3fb3c.jpg",
+    "inference_time_ms": 424.43,
+    "inference_time_sec": 0.4244,
+    "fps": 2.36,
+    "detection_count": 1,
+    "image_size_kb": 42.58
+  }
+]

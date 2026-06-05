@@ -1,1 +1,12 @@
 .env/
+media/
+static/
+__pycache__/
+*.pyc
+*.pyo
+./plasticBottleDetection/__pycache__/
+
+plasticBottleDetection\best_efficientdet_d2.pt
+./plasticBottleDetection/efficientdet-d0_29_600.pth
+plasticBottleDetection\checkpoint_best_total.pth
+*.pth
