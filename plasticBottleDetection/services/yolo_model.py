@@ -4,7 +4,7 @@ import time
 from .inference_logger import InferenceLogger
 
 CLASS_NAMES = {
-    1: "BotolPlastik"
+    0: "BotolPlastik"
 }
 
 model = YOLO("plasticBottleDetection/best_plasticbottle_yolov26.pt")

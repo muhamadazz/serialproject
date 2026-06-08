@@ -8,5 +8,15 @@
     "fps": 2.36,
     "detection_count": 1,
     "image_size_kb": 42.58
+  },
+  {
+    "timestamp": "2026-06-08T13:58:50.832305",
+    "model": "YOLO",
+    "image_name": "Syakila-Andrayani_2025-10-06T17-42-59-456Z_jpg.rf.56389b7e7c33e30b97e1c5ec22a3fb3c.jpg",
+    "inference_time_ms": 605.75,
+    "inference_time_sec": 0.6057,
+    "fps": 1.65,
+    "detection_count": 1,
+    "image_size_kb": 42.58
   }
 ]

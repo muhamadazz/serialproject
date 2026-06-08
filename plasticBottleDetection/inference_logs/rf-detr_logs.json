@@ -8,5 +8,15 @@
     "fps": 0.28,
     "detection_count": 1,
     "image_size_kb": 42.58
+  },
+  {
+    "timestamp": "2026-06-08T13:59:42.975782",
+    "model": "RF-DETR",
+    "image_name": "Abdul Muhyi_2025-10-02T18-32-10-073Z.jpg",
+    "inference_time_ms": 5309.63,
+    "inference_time_sec": 5.3096,
+    "fps": 0.19,
+    "detection_count": 1,
+    "image_size_kb": 39.12
   }
 ]
